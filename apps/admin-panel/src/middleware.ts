@@ -47,7 +47,10 @@ export async function middleware(request: NextRequest) {
   // Check if user is authenticated
   if (!token) {
     const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
+    // Only set callbackUrl if we're not already on a public path
+    if (!publicPaths.includes(pathname)) {
+      url.searchParams.set('callbackUrl', pathname);
+    }
     return NextResponse.redirect(url);
   }
 
@@ -78,7 +81,10 @@ export async function middleware(request: NextRequest) {
   } catch (error) {
     // If token verification fails, redirect to login
     const url = new URL('/login', request.url);
-    url.searchParams.set('callbackUrl', pathname);
+    // Only set callbackUrl if we're not already on a public path
+    if (!publicPaths.includes(pathname)) {
+      url.searchParams.set('callbackUrl', pathname);
+    }
     return NextResponse.redirect(url);
   }
 }

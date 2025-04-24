@@ -1,5 +1,18 @@
 {
+  "/not-found": "app/not-found.js",
+  "/api/auth/me/route": "app/api/auth/me/route.js",
+  "/api/auth/login/route": "app/api/auth/login/route.js",
   "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
-  "/(auth)/redirect/page": "app/(auth)/redirect/page.js",
-  "/(public)/login/page": "app/(public)/login/page.js"
+  "/(public)/login/page": "app/(public)/login/page.js",
+  "/(dashboard)/dashboard/incidents/page": "app/(dashboard)/dashboard/incidents/page.js",
+  "/(dashboard)/dashboard/emergencies/page": "app/(dashboard)/dashboard/emergencies/page.js",
+  "/(dashboard)/dashboard/emergency-control/active/page": "app/(dashboard)/dashboard/emergency-control/active/page.js",
+  "/(dashboard)/dashboard/emergency-control/history/page": "app/(dashboard)/dashboard/emergency-control/history/page.js",
+  "/(dashboard)/dashboard/emergency-control/settings/page": "app/(dashboard)/dashboard/emergency-control/settings/page.js",
+  "/(dashboard)/dashboard/users/page": "app/(dashboard)/dashboard/users/page.js",
+  "/(dashboard)/dashboard/reports/page": "app/(dashboard)/dashboard/reports/page.js",
+  "/(dashboard)/dashboard/reports/analytics/page": "app/(dashboard)/dashboard/reports/analytics/page.js",
+  "/(dashboard)/dashboard/reports/generate/page": "app/(dashboard)/dashboard/reports/generate/page.js",
+  "/(dashboard)/dashboard/reports/manage/page": "app/(dashboard)/dashboard/reports/manage/page.js",
+  "/(dashboard)/dashboard/settings/page": "app/(dashboard)/dashboard/settings/page.js"
 }
