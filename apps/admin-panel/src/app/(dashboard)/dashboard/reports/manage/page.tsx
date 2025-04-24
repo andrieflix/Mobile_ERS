@@ -88,7 +88,7 @@ export default function ManageReportsPage() {
 
   const handleUpdate = async (updatedReport: Report) => {
     try {
-      await reportService.updateReport(updatedReport);
+      await reportService.updateReport(updatedReport.id, updatedReport);
       toast.success('Report updated successfully');
       fetchReports();
       setIsEditModalOpen(false);
