@@ -1,0 +1,44 @@
+
+> @ph-emergency/admin-panel@1.0.0 build C:\Users\IC2\Desktop\Netlify Project Sample\apps\admin-panel
+> next build
+
+   ▲ Next.js 14.1.0
+   - Environments: .env
+
+   Creating an optimized production build ...
+ ⚠ Compiled with warnings
+
+./src/components/layout/DashboardLayout.tsx
+Attempted import error: 'Header' is not exported from './Header' (imported as 'Header').
+
+Import trace for requested module:
+./src/components/layout/DashboardLayout.tsx
+./src/app/dashboard/page.tsx
+
+Compiler edge-server unexpectedly exited with code: null and signal: SIGTERM
+ ⚠ Compiled with warnings
+
+./src/components/layout/DashboardLayout.tsx
+Attempted import error: 'Header' is not exported from './Header' (imported as 'Header').
+
+Import trace for requested module:
+./src/components/layout/DashboardLayout.tsx
+./src/app/dashboard/page.tsx
+
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+Failed to compile.
+
+.next/types/app/api/email/track/[trackingId]/route.ts:8:13
+Type error: Type 'OmitWithTag<typeof import("C:/Users/IC2/Desktop/Netlify Project Sample/apps/admin-panel/src/app/api/email/track/[trackingId]/route"), "POST" | "PUT" | "GET" | "DELETE" | "HEAD" | "OPTIONS" | ... 9 more ... | "maxDuration", "">' does not satisfy the constraint '{ [x: string]: never; }'.
+  Property 'storeTrackingData' is incompatible with index signature.
+    Type '(trackingId: string, data: { email: string; subject: string; sentAt: number; }) => void' is not assignable to type 'never'.
+
+[0m [90m  6 |[39m[0m
+[0m [90m  7 |[39m [90m// Check that the entry is a valid entry[39m[0m
+[0m[31m[1m>[22m[39m[90m  8 |[39m checkFields[33m<[39m[33mDiff[39m[33m<[39m{[0m
+[0m [90m    |[39m             [31m[1m^[22m[39m[0m
+[0m [90m  9 |[39m   [33mGET[39m[33m?[39m[33m:[39m [33mFunction[39m[0m
+[0m [90m 10 |[39m   [33mHEAD[39m[33m?[39m[33m:[39m [33mFunction[39m[0m
+[0m [90m 11 |[39m   [33mOPTIONS[39m[33m?[39m[33m:[39m [33mFunction[39m[0m
+ ELIFECYCLE  Command failed with exit code 1.

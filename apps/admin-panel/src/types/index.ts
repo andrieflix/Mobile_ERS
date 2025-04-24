@@ -1,0 +1,125 @@
+export interface Emergency {
+  id: number;
+  type: 'Fire' | 'Medical' | 'Police' | 'Natural Disaster';
+  location: string;
+  status: 'Active' | 'Resolved' | 'Pending';
+  description: string;
+  priority: 'High' | 'Medium' | 'Low';
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  email: string;
+  role: 'Admin' | 'Responder' | 'Dispatcher';
+  status: 'Active' | 'Inactive';
+  lastLogin: string;
+  createdAt: string;
+}
+
+export interface AnalyticsData {
+  activeEmergencies: number;
+  totalUsers: number;
+  responseRate: number;
+  avgResponseTime: number;
+  emergenciesByType: {
+    type: string;
+    count: number;
+  }[];
+  responseTimeHistory: {
+    date: string;
+    time: number;
+    system: 'manual' | 'automated';
+  }[];
+}
+
+export interface Settings {
+  notifications: {
+    email: boolean;
+    push: boolean;
+    sms: boolean;
+  };
+  displayPreferences: {
+    theme: 'light' | 'dark';
+    language: string;
+    timezone: string;
+  };
+  security: {
+    twoFactorAuth: boolean;
+    sessionTimeout: number;
+  };
+}
+
+export enum ReportType {
+  EMERGENCY_SUMMARY = 'Emergency Summary',
+  RESPONSE_PERFORMANCE = 'Response Performance',
+  USER_ACTIVITY = 'User Activity',
+  MONTHLY_SUMMARY = 'Monthly Summary',
+  INCIDENT_REPORT = 'Incident Report'
+}
+
+export enum ReportStatus {
+  COMPLETED = 'Completed',
+  PROCESSING = 'Processing',
+  FAILED = 'Failed'
+}
+
+export interface DateRange {
+  start: string;
+  end: string;
+}
+
+export interface Report {
+  id: string;
+  name: string;
+  type: ReportType;
+  dateRange: DateRange;
+  createdAt: string;
+  status: ReportStatus;
+  size: string;
+  createdBy: string;
+  format: 'PDF' | 'EXCEL' | 'CSV';
+  incidentDetails?: {
+    incidentId: number;
+    cause: string;
+    casualties: {
+      fatalities: number;
+      injuries: number;
+      missing: number;
+    };
+    propertyDamage: {
+      description: string;
+      estimatedCost: number;
+      affectedAreas: string;
+    };
+    actionsTaken: string;
+    recommendations: string;
+    weatherConditions: string;
+    responseTime: string;
+    resourcesDeployed: string;
+    challengesFaced: string;
+    lessonsLearned: string;
+    attachments?: File[];
+  };
+}
+
+export interface FetchReportsParams {
+  page: number;
+  limit: number;
+  search?: string;
+  type?: ReportType;
+  status?: ReportStatus;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  startDate?: string;
+  endDate?: string;
+  format?: string;
+}
+
+export interface FetchReportsResponse {
+  reports: Report[];
+  total: number;
+  totalPages: number;
+} 

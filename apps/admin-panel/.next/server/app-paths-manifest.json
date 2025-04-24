@@ -1,0 +1,14 @@
+{
+  "/api/auth/me/route": "app/api/auth/me/route.js",
+  "/not-found": "app/not-found.js",
+  "/(dashboard)/dashboard/users/page": "app/(dashboard)/dashboard/users/page.js",
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(dashboard)/dashboard/settings/page": "app/(dashboard)/dashboard/settings/page.js",
+  "/(dashboard)/dashboard/profile/page": "app/(dashboard)/dashboard/profile/page.js",
+  "/(dashboard)/dashboard/activity-logs/page": "app/(dashboard)/dashboard/activity-logs/page.js",
+  "/(dashboard)/dashboard/reports/analytics/page": "app/(dashboard)/dashboard/reports/analytics/page.js",
+  "/(dashboard)/dashboard/emergency-control/active/page": "app/(dashboard)/dashboard/emergency-control/active/page.js",
+  "/(dashboard)/dashboard/incidents/page": "app/(dashboard)/dashboard/incidents/page.js",
+  "/(dashboard)/dashboard/emergency-control/history/page": "app/(dashboard)/dashboard/emergency-control/history/page.js",
+  "/(dashboard)/dashboard/emergency-control/settings/page": "app/(dashboard)/dashboard/emergency-control/settings/page.js"
+}
