@@ -2,14 +2,6 @@ import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { getTrackingData, updateTrackingData } from '@/utils/emailTracking';
 
-// In a real application, this would be stored in a database
-const emailTracking = new Map<string, {
-  email: string;
-  subject: string;
-  sentAt: number;
-  openedAt?: number;
-}>();
-
 export async function GET(
   request: Request,
   { params }: { params: { trackingId: string } }
@@ -53,13 +45,4 @@ export async function GET(
     console.error('Email tracking error:', error);
     return new NextResponse(null, { status: 500 });
   }
-}
-
-// Helper function to store tracking data when sending emails
-export function storeTrackingData(trackingId: string, data: {
-  email: string;
-  subject: string;
-  sentAt: number;
-}) {
-  emailTracking.set(trackingId, data);
 } 
