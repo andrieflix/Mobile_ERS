@@ -13,14 +13,14 @@ function LoginForm() {
   const router = useRouter();
   const { login, user } = useAuth();
   const searchParams = useSearchParams();
-  const redirectPath = searchParams.get('redirect') || '/dashboard';
+  const redirectPath = searchParams.get('callbackUrl') || '/dashboard';
 
   // If already authenticated, redirect
   useEffect(() => {
     if (user) {
-      window.location.href = redirectPath;
+      router.push(redirectPath);
     }
-  }, [user, redirectPath]);
+  }, [user, redirectPath, router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -30,7 +30,7 @@ function LoginForm() {
     try {
       await login(email, password);
       // After successful login, redirect to the specified path
-      window.location.href = redirectPath;
+      router.push(redirectPath);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Login failed');
       setLoading(false);

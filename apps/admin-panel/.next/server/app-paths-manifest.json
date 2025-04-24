@@ -1,1 +1,5 @@
-{}
+{
+  "/(dashboard)/dashboard/page": "app/(dashboard)/dashboard/page.js",
+  "/(auth)/redirect/page": "app/(auth)/redirect/page.js",
+  "/(public)/login/page": "app/(public)/login/page.js"
+}
