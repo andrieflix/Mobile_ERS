@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Philippines Emergency Response System
 
 A comprehensive emergency response system for the Philippines, consisting of mobile applications for responders and residents, along with a web-based admin panel.
@@ -86,3 +87,6 @@ ph-emergency-response-system/
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details. 
+=======
+# Mobile_ERS
+>>>>>>> 0ac5de742b7a1ad7e99c0c09040fcc389bf84f28
