@@ -21,10 +21,11 @@ function LoginForm() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
+  // Handle redirect if already authenticated
   useEffect(() => {
     if (isAuthenticated) {
-      const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-      router.push(callbackUrl);
+      const callbackUrl = searchParams.get('callbackUrl');
+      router.replace(callbackUrl || '/dashboard');
     }
   }, [isAuthenticated, router, searchParams]);
 
@@ -35,10 +36,9 @@ function LoginForm() {
 
     try {
       await login(email, password);
-      const callbackUrl = searchParams.get('callbackUrl') || '/dashboard';
-      router.push(callbackUrl);
+      // After successful login, the useEffect above will handle the navigation
     } catch (err) {
-      setError('Invalid email or password');
+      setError(err instanceof Error ? err.message : 'Invalid email or password');
     } finally {
       setIsLoading(false);
     }
@@ -95,7 +95,7 @@ function LoginForm() {
 
 export default function LoginPage() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-gray-50 px-4 py-12 sm:px-6 lg:px-8">
+    <div className="flex min-h-screen items-center justify-center bg-gray-50 dark:bg-gray-900 px-4 py-12 sm:px-6 lg:px-8">
       <Suspense fallback={
         <div className="flex items-center justify-center">
           <Loader2 className="h-8 w-8 animate-spin text-gray-500" />

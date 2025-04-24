@@ -148,12 +148,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
 
       if (!response.ok) {
-        throw new Error('Login failed');
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Login failed');
       }
 
       const userData = await response.json();
+      // Set user state first
       setUser(userData);
-      router.push('/dashboard');
+      // Return the user data instead of navigating here
+      return userData;
     } catch (error) {
       console.error('Login error:', error);
       throw error;
