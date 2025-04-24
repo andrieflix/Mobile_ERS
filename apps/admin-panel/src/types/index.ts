@@ -52,57 +52,20 @@ export interface Settings {
   };
 }
 
-export enum ReportType {
-  EMERGENCY_SUMMARY = 'Emergency Summary',
-  RESPONSE_PERFORMANCE = 'Response Performance',
-  USER_ACTIVITY = 'User Activity',
-  MONTHLY_SUMMARY = 'Monthly Summary',
-  INCIDENT_REPORT = 'Incident Report'
-}
+export type ReportType = 'emergency' | 'user' | 'system' | 'custom';
 
-export enum ReportStatus {
-  COMPLETED = 'Completed',
-  PROCESSING = 'Processing',
-  FAILED = 'Failed'
-}
+export type ReportStatus = 'pending' | 'completed' | 'failed';
 
 export interface DateRange {
   start: string;
   end: string;
 }
 
-export interface Report {
-  id: string;
-  name: string;
+export interface ReportConfig {
   type: ReportType;
   dateRange: DateRange;
-  createdAt: string;
-  status: ReportStatus;
-  size: string;
-  createdBy: string;
-  format: 'PDF' | 'EXCEL' | 'CSV';
-  incidentDetails?: {
-    incidentId: number;
-    cause: string;
-    casualties: {
-      fatalities: number;
-      injuries: number;
-      missing: number;
-    };
-    propertyDamage: {
-      description: string;
-      estimatedCost: number;
-      affectedAreas: string;
-    };
-    actionsTaken: string;
-    recommendations: string;
-    weatherConditions: string;
-    responseTime: string;
-    resourcesDeployed: string;
-    challengesFaced: string;
-    lessonsLearned: string;
-    attachments?: File[];
-  };
+  format: 'pdf' | 'csv' | 'excel';
+  filters: Record<string, any>;
 }
 
 export interface FetchReportsParams {

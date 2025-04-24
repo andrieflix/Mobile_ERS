@@ -2,12 +2,13 @@
 
 import { useState } from 'react';
 import { FiDownload, FiFileText, FiCalendar } from 'react-icons/fi';
+import { ReportType } from '@/types';
 
 interface ReportTemplate {
   id: string;
   name: string;
   description: string;
-  type: 'emergency' | 'response' | 'user' | 'summary';
+  type: ReportType;
 }
 
 const reportTemplates: ReportTemplate[] = [
@@ -18,22 +19,22 @@ const reportTemplates: ReportTemplate[] = [
     type: 'emergency'
   },
   {
-    id: 'response-performance',
-    name: 'Response Performance Report',
-    description: 'Analysis of response times, efficiency metrics, and performance indicators',
-    type: 'response'
-  },
-  {
     id: 'user-activity',
     name: 'User Activity Report',
     description: 'Overview of user actions, login patterns, and system usage',
     type: 'user'
   },
   {
-    id: 'monthly-summary',
-    name: 'Monthly Summary Report',
-    description: 'Comprehensive monthly overview of all system activities and metrics',
-    type: 'summary'
+    id: 'system-performance',
+    name: 'System Performance Report',
+    description: 'Analysis of system performance, uptime, and resource usage',
+    type: 'system'
+  },
+  {
+    id: 'custom-report',
+    name: 'Custom Report',
+    description: 'Create a custom report with specific parameters',
+    type: 'custom'
   }
 ];
 

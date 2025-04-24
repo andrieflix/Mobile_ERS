@@ -4,12 +4,15 @@ import { useState, useEffect } from 'react';
 import { FiSearch, FiFilter, FiUser, FiMapPin } from 'react-icons/fi';
 import { Report, fetchReports } from '@ph-emergency/api';
 
+type ReportType = 'emergency' | 'user' | 'system' | 'custom';
+type ReportStatus = 'pending' | 'completed' | 'failed';
+
 export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
-  const [selectedType, setSelectedType] = useState<string>('');
-  const [selectedStatus, setSelectedStatus] = useState<string>('');
+  const [type, setType] = useState<ReportType | ''>('');
+  const [status, setStatus] = useState<ReportStatus | ''>('');
 
   useEffect(() => {
     const loadReports = async () => {
@@ -27,8 +30,8 @@ export default function ReportsPage() {
 
   const filteredReports = reports.filter(report => {
     const matchesSearch = report.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesType = !selectedType || report.type === selectedType;
-    const matchesStatus = !selectedStatus || report.status === selectedStatus;
+    const matchesType = !type || report.type === type;
+    const matchesStatus = !status || report.status === status;
     return matchesSearch && matchesType && matchesStatus;
   });
 
@@ -57,22 +60,22 @@ export default function ReportsPage() {
           </div>
           <div className="flex gap-2">
             <select
-              value={selectedType}
-              onChange={(e) => setSelectedType(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              value={type}
+              onChange={(e) => setType(e.target.value as ReportType)}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             >
-              <option value="">All Types</option>
+              <option value="">Select Type</option>
               <option value="emergency">Emergency</option>
               <option value="user">User</option>
               <option value="system">System</option>
               <option value="custom">Custom</option>
             </select>
             <select
-              value={selectedStatus}
-              onChange={(e) => setSelectedStatus(e.target.value)}
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              value={status}
+              onChange={(e) => setStatus(e.target.value as ReportStatus)}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             >
-              <option value="">All Statuses</option>
+              <option value="">Select Status</option>
               <option value="pending">Pending</option>
               <option value="completed">Completed</option>
               <option value="failed">Failed</option>
