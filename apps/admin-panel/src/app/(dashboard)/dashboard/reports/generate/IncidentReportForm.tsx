@@ -73,7 +73,7 @@ export default function IncidentReportForm({ userRole, activeEmergencies, onSubm
 
     try {
       const reportData: Partial<Report> = {
-        name: `Incident Report - ${selectedEmergency.type} at ${selectedEmergency.location}`,
+        title: `Incident Report - ${selectedEmergency.type} at ${selectedEmergency.location}`,
         type: 'emergency',
         dateRange: {
           start: selectedEmergency.createdAt,

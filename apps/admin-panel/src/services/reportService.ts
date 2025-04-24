@@ -88,6 +88,27 @@ export class ReportService {
       throw error;
     }
   }
+
+  async deleteReport(id: string): Promise<void> {
+    try {
+      await api.delete(`/api/reports/${id}`);
+    } catch (error) {
+      console.error('Error deleting report:', error);
+      throw error;
+    }
+  }
+
+  async downloadReport(id: string): Promise<Blob> {
+    try {
+      const response = await api.get(`/api/reports/${id}/download`, {
+        responseType: 'blob'
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error downloading report:', error);
+      throw error;
+    }
+  }
 }
 
 export const reportService = new ReportService();

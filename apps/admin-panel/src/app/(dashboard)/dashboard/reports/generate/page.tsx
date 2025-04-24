@@ -7,7 +7,7 @@ import { toast } from 'react-hot-toast';
 import IncidentReportForm from './IncidentReportForm';
 
 export default function GenerateReportPage() {
-  const [reportType, setReportType] = useState<ReportType>(ReportType.EMERGENCY_SUMMARY);
+  const [reportType, setReportType] = useState<ReportType>('emergency');
   const [activeEmergencies, setActiveEmergencies] = useState<Emergency[]>([]);
   const [userRole, setUserRole] = useState<string>(''); // In production, get this from auth context
 
@@ -55,13 +55,14 @@ export default function GenerateReportPage() {
             onChange={(e) => setReportType(e.target.value as ReportType)}
             className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
           >
-            {Object.values(ReportType).map((type) => (
-              <option key={type} value={type}>{type}</option>
-            ))}
+            <option value="emergency">Emergency</option>
+            <option value="user">User</option>
+            <option value="system">System</option>
+            <option value="custom">Custom</option>
           </select>
         </div>
 
-        {reportType === ReportType.INCIDENT_REPORT ? (
+        {reportType === 'emergency' ? (
           <IncidentReportForm
             userRole={userRole}
             activeEmergencies={activeEmergencies}
@@ -89,9 +90,9 @@ export default function GenerateReportPage() {
               <select
                 className="mt-1 block w-full pl-3 pr-10 py-2 text-base border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm rounded-md"
               >
-                <option value="PDF">PDF</option>
-                <option value="EXCEL">Excel</option>
-                <option value="CSV">CSV</option>
+                <option value="pdf">PDF</option>
+                <option value="excel">Excel</option>
+                <option value="csv">CSV</option>
               </select>
             </div>
 
@@ -99,8 +100,8 @@ export default function GenerateReportPage() {
               <button
                 onClick={() => handleGenerateReport({
                   type: reportType,
-                  status: ReportStatus.PROCESSING,
-                  format: 'PDF'
+                  status: 'pending',
+                  format: 'pdf'
                 })}
                 className="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
               >

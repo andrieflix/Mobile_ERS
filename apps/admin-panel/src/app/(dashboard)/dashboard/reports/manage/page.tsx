@@ -3,9 +3,21 @@
 import { useState, useEffect } from 'react';
 import { FiArrowLeft, FiDownload, FiEdit2, FiTrash2, FiEye, FiSearch, FiFilter, FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import Link from 'next/link';
-import { Report, ReportStatus, ReportType } from '@/types';
+import { Report, ReportType, ReportStatus } from '@/types';
 import { reportService } from '@/services/reportService';
 import { toast } from 'react-hot-toast';
+
+interface Filters {
+  type: ReportType | undefined;
+  status: ReportStatus | undefined;
+  search: string;
+  startDate: string;
+  endDate: string;
+  format: string;
+}
+
+const reportTypes = ['emergency', 'user', 'system', 'custom'] as const;
+const reportStatuses = ['pending', 'completed', 'failed'] as const;
 
 export default function ManageReportsPage() {
   // State
@@ -20,13 +32,13 @@ export default function ManageReportsPage() {
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   // Filters and Pagination
-  const [filters, setFilters] = useState({
+  const [filters, setFilters] = useState<Filters>({
+    type: undefined,
+    status: undefined,
     search: '',
-    type: '',
-    status: '',
-    format: '',
     startDate: '',
-    endDate: ''
+    endDate: '',
+    format: ''
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -42,8 +54,8 @@ export default function ManageReportsPage() {
         page,
         limit: ITEMS_PER_PAGE,
         search: filters.search,
-        type: filters.type as ReportType,
-        status: filters.status as ReportStatus,
+        type: filters.type,
+        status: filters.status,
         sortBy: sort.field,
         sortOrder: sort.order,
         startDate: filters.startDate,
@@ -74,15 +86,12 @@ export default function ManageReportsPage() {
     }));
   };
 
-  const handleDelete = async (reportId: string) => {
+  const handleDeleteReport = async (id: string) => {
     try {
-      await reportService.deleteReport(reportId);
-      toast.success('Report deleted successfully');
-      fetchReports();
-      setIsDeleteModalOpen(false);
-      setSelectedReport(null);
-    } catch (err) {
-      toast.error('Failed to delete report');
+      await reportService.deleteReport(id);
+      setReports(reports.filter(report => report.id !== id));
+    } catch (error) {
+      console.error('Error deleting report:', error);
     }
   };
 
@@ -98,21 +107,32 @@ export default function ManageReportsPage() {
     }
   };
 
-  const handleDownload = async (reportId: string) => {
+  const handleDownloadReport = async (id: string) => {
     try {
-      const blob = await reportService.downloadReport(reportId);
+      const blob = await reportService.downloadReport(id);
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `report-${reportId}.pdf`;
+      a.download = `report-${id}.pdf`;
       document.body.appendChild(a);
       a.click();
-      document.body.removeChild(a);
       window.URL.revokeObjectURL(url);
-    } catch (err) {
-      toast.error('Failed to download report');
+      document.body.removeChild(a);
+    } catch (error) {
+      console.error('Error downloading report:', error);
     }
   };
+
+  const filteredReports = reports.filter(report => {
+    const matchesSearch = report.title.toLowerCase().includes(filters.search.toLowerCase());
+    const matchesType = !filters.type || report.type === filters.type;
+    const matchesStatus = !filters.status || report.status === filters.status;
+    const matchesFormat = !filters.format || (report as any).format === filters.format;
+    const matchesDateRange = (!filters.startDate && !filters.endDate) || 
+      (new Date(report.createdAt) >= new Date(filters.startDate) && 
+       new Date(report.createdAt) <= new Date(filters.endDate));
+    return matchesSearch && matchesType && matchesStatus && matchesFormat && matchesDateRange;
+  });
 
   return (
     <div className="space-y-6">
@@ -145,12 +165,18 @@ export default function ManageReportsPage() {
           <div className="flex items-center gap-2">
             <FiFilter className="text-gray-400" />
             <select
-              value={filters.type}
-              onChange={(e) => setFilters(prev => ({ ...prev, type: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              value={filters.type ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFilters(prev => ({
+                  ...prev,
+                  type: value === '' ? undefined : value as ReportType
+                }));
+              }}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">All Types</option>
-              {Object.values(ReportType).map(type => (
+              {reportTypes.map(type => (
                 <option key={type} value={type}>{type}</option>
               ))}
             </select>
@@ -160,12 +186,18 @@ export default function ManageReportsPage() {
           <div className="flex items-center gap-2">
             <FiFilter className="text-gray-400" />
             <select
-              value={filters.status}
-              onChange={(e) => setFilters(prev => ({ ...prev, status: e.target.value }))}
-              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
+              value={filters.status ?? ''}
+              onChange={(e) => {
+                const value = e.target.value;
+                setFilters(prev => ({
+                  ...prev,
+                  status: value === '' ? undefined : value as ReportStatus
+                }));
+              }}
+              className="block w-full rounded-lg border border-gray-300 bg-gray-50 p-2.5 text-sm text-gray-900 focus:border-blue-500 focus:ring-blue-500"
             >
               <option value="">All Statuses</option>
-              {Object.values(ReportStatus).map(status => (
+              {reportStatuses.map(status => (
                 <option key={status} value={status}>{status}</option>
               ))}
             </select>
@@ -180,9 +212,9 @@ export default function ManageReportsPage() {
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
             >
               <option value="">All Formats</option>
-              <option value="PDF">PDF</option>
-              <option value="EXCEL">Excel</option>
-              <option value="CSV">CSV</option>
+              <option value="pdf">PDF</option>
+              <option value="excel">Excel</option>
+              <option value="csv">CSV</option>
             </select>
           </div>
 
@@ -222,13 +254,12 @@ export default function ManageReportsPage() {
               <thead className="bg-gray-50">
                 <tr>
                   {[
-                    { field: 'name', label: 'Report Name' },
-                    { field: 'dateRange', label: 'Date Range' },
-                    { field: 'createdAt', label: 'Created At' },
+                    { field: 'title', label: 'Report Name' },
+                    { field: 'type', label: 'Type' },
                     { field: 'status', label: 'Status' },
-                    { field: 'format', label: 'Format' },
-                    { field: 'size', label: 'Size' },
-                    { field: 'createdBy', label: 'Created by' }
+                    { field: 'generatedBy', label: 'Created by' },
+                    { field: 'createdAt', label: 'Created At' },
+                    { field: 'fileSize', label: 'Size' },
                   ].map(({ field, label }) => (
                     <th
                       key={field}
@@ -251,69 +282,38 @@ export default function ManageReportsPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {reports.map((report) => (
+                {filteredReports.map((report: Report) => (
                   <tr key={report.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4 whitespace-wrap">
-                      <div className="text-sm font-medium text-gray-900">{report.name}</div>
+                      <div className="text-sm font-medium text-gray-900">{report.title}</div>
                       <div className="text-sm text-gray-500">{report.type}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                      {new Date(report.dateRange.start).toLocaleDateString()} - {new Date(report.dateRange.end).toLocaleDateString()}
-                    </td>
-                    <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                      {new Date(report.createdAt).toLocaleString()}
-                    </td>
                     <td className="px-6 py-4 whitespace-wrap">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        report.status === ReportStatus.COMPLETED ? 'bg-green-100 text-green-800' :
-                        report.status === ReportStatus.PROCESSING ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
+                      <span className={`status-badge ${report.status}`}>
                         {report.status}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                      {report.format}
+                      {report.generatedBy}
                     </td>
                     <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                      {report.size}
+                      {new Date(report.createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-6 py-4 whitespace-wrap text-sm text-gray-500">
-                      {report.createdBy}
+                      {report.fileSize}
                     </td>
                     <td className="px-6 py-4 whitespace-wrap text-right text-sm font-medium">
                       <div className="flex items-center justify-end gap-2">
-                        <button
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setIsViewModalOpen(true);
-                          }}
-                          className="text-blue-600 hover:text-blue-900"
-                        >
-                          <FiEye className="h-5 w-5" />
-                        </button>
-                        {report.status === ReportStatus.COMPLETED && (
+                        {report.status === 'completed' && (
                           <button
-                            onClick={() => handleDownload(report.id)}
+                            onClick={() => handleDownloadReport(report.id)}
                             className="text-green-600 hover:text-green-900"
                           >
                             <FiDownload className="h-5 w-5" />
                           </button>
                         )}
                         <button
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setIsEditModalOpen(true);
-                          }}
-                          className="text-indigo-600 hover:text-indigo-900"
-                        >
-                          <FiEdit2 className="h-5 w-5" />
-                        </button>
-                        <button
-                          onClick={() => {
-                            setSelectedReport(report);
-                            setIsDeleteModalOpen(true);
-                          }}
+                          onClick={() => handleDeleteReport(report.id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           <FiTrash2 className="h-5 w-5" />
@@ -434,7 +434,7 @@ export default function ManageReportsPage() {
               <div className="space-y-4">
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Name</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedReport.name}</p>
+                  <p className="mt-1 text-sm text-gray-900">{selectedReport.title}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Type</label>
@@ -443,7 +443,7 @@ export default function ManageReportsPage() {
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Date Range</label>
                   <p className="mt-1 text-sm text-gray-900">
-                    {new Date(selectedReport.dateRange.start).toLocaleDateString()} - {new Date(selectedReport.dateRange.end).toLocaleDateString()}
+                    {new Date(selectedReport.createdAt).toLocaleDateString()}
                   </p>
                 </div>
                 <div>
@@ -452,7 +452,7 @@ export default function ManageReportsPage() {
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Created By</label>
-                  <p className="mt-1 text-sm text-gray-900">{selectedReport.createdBy}</p>
+                  <p className="mt-1 text-sm text-gray-900">{selectedReport.generatedBy}</p>
                 </div>
                 <div>
                   <label className="block text-sm font-medium text-gray-700">Format</label>
@@ -462,8 +462,8 @@ export default function ManageReportsPage() {
                   <label className="block text-sm font-medium text-gray-700">Status</label>
                   <p className="mt-1">
                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                      selectedReport.status === ReportStatus.COMPLETED ? 'bg-green-100 text-green-800' :
-                      selectedReport.status === ReportStatus.PROCESSING ? 'bg-yellow-100 text-yellow-800' :
+                      selectedReport.status === 'completed' ? 'bg-green-100 text-green-800' :
+                      selectedReport.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
                       'bg-red-100 text-red-800'
                     }`}>
                       {selectedReport.status}
@@ -472,9 +472,9 @@ export default function ManageReportsPage() {
                 </div>
               </div>
               <div className="flex justify-end gap-3 mt-6">
-                {selectedReport.status === ReportStatus.COMPLETED && (
+                {selectedReport.status === 'completed' && (
                   <button
-                    onClick={() => handleDownload(selectedReport.id)}
+                    onClick={() => handleDownloadReport(selectedReport.id)}
                     className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors flex items-center gap-2"
                   >
                     <FiDownload className="h-4 w-4" />
@@ -505,8 +505,8 @@ export default function ManageReportsPage() {
                   <label className="block text-sm font-medium text-gray-700">Name</label>
                   <input
                     type="text"
-                    value={selectedReport.name}
-                    onChange={(e) => setSelectedReport({ ...selectedReport, name: e.target.value })}
+                    value={selectedReport.title}
+                    onChange={(e) => setSelectedReport({ ...selectedReport, title: e.target.value })}
                     className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   />
                 </div>
@@ -514,10 +514,13 @@ export default function ManageReportsPage() {
                   <label className="block text-sm font-medium text-gray-700">Type</label>
                   <select
                     value={selectedReport.type}
-                    onChange={(e) => setSelectedReport({ ...selectedReport, type: e.target.value as ReportType })}
+                    onChange={(e) => {
+                      const value = e.target.value as ReportType;
+                      setSelectedReport({ ...selectedReport, type: value });
+                    }}
                     className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                   >
-                    {Object.values(ReportType).map(type => (
+                    {reportTypes.map(type => (
                       <option key={type} value={type}>{type}</option>
                     ))}
                   </select>
@@ -527,10 +530,13 @@ export default function ManageReportsPage() {
                     <label className="block text-sm font-medium text-gray-700">Start Date</label>
                     <input
                       type="date"
-                      value={selectedReport.dateRange.start}
+                      value={selectedReport.dateRange?.start || selectedReport.createdAt}
                       onChange={(e) => setSelectedReport({
                         ...selectedReport,
-                        dateRange: { ...selectedReport.dateRange, start: e.target.value }
+                        dateRange: {
+                          start: e.target.value,
+                          end: selectedReport.dateRange?.end || selectedReport.createdAt
+                        }
                       })}
                       className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -539,10 +545,13 @@ export default function ManageReportsPage() {
                     <label className="block text-sm font-medium text-gray-700">End Date</label>
                     <input
                       type="date"
-                      value={selectedReport.dateRange.end}
+                      value={selectedReport.dateRange?.end || selectedReport.createdAt}
                       onChange={(e) => setSelectedReport({
                         ...selectedReport,
-                        dateRange: { ...selectedReport.dateRange, end: e.target.value }
+                        dateRange: {
+                          start: selectedReport.dateRange?.start || selectedReport.createdAt,
+                          end: e.target.value
+                        }
                       })}
                       className="mt-1 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -580,7 +589,7 @@ export default function ManageReportsPage() {
               </p>
               <div className="flex justify-end gap-3 mt-6">
                 <button
-                  onClick={() => handleDelete(selectedReport.id)}
+                  onClick={() => handleDeleteReport(selectedReport.id)}
                   className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
                 >
                   Delete
