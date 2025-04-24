@@ -43,12 +43,12 @@ export class ReportService {
     return {
       id,
       title: 'Sample Report',
-      type: 'FIRE',
-      status: 'PENDING',
+      type: 'emergency',
+      status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       generatedBy: 'system',
-      fileSize: '1.2MB'
+      fileSize: '1MB'
     };
   }
 
@@ -58,8 +58,8 @@ export class ReportService {
       {
         id: '1',
         title: 'Fire Incident Report',
-        type: 'FIRE',
-        status: 'COMPLETED',
+        type: 'emergency',
+        status: 'completed',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         generatedBy: 'system',
@@ -68,8 +68,8 @@ export class ReportService {
       {
         id: '2',
         title: 'Medical Emergency Report',
-        type: 'MEDICAL',
-        status: 'IN_PROGRESS',
+        type: 'user',
+        status: 'completed',
         createdAt: new Date().toISOString(),
         updatedAt: new Date().toISOString(),
         generatedBy: 'system',
@@ -94,15 +94,15 @@ export class ReportService {
     return {
       totalReports: 2,
       reportsByType: {
-        FIRE: 1,
-        MEDICAL: 1,
-        POLICE: 0,
-        NATURAL_DISASTER: 0
+        emergency: 1,
+        user: 1,
+        system: 0,
+        custom: 0
       },
       reportsByStatus: {
-        PENDING: 0,
-        IN_PROGRESS: 1,
-        COMPLETED: 1
+        pending: 0,
+        completed: 1,
+        failed: 1
       },
       averageResponseTime: 45,
       responseTimeHistory: [
@@ -141,7 +141,7 @@ export class ReportService {
       id: Math.random().toString(36).substr(2, 9),
       title: `${type} Report`,
       type,
-      status: 'PENDING',
+      status: 'pending',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       generatedBy: 'system',
