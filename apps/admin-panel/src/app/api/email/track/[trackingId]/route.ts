@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
+import { getTrackingData, updateTrackingData } from '@/utils/emailTracking';
 
 // In a real application, this would be stored in a database
 const emailTracking = new Map<string, {
@@ -17,12 +18,11 @@ export async function GET(
     const { trackingId } = params;
 
     // Get tracking data
-    const trackingData = emailTracking.get(trackingId);
+    const trackingData = getTrackingData(trackingId);
     if (trackingData) {
       // Update open time if not already set
       if (!trackingData.openedAt) {
-        trackingData.openedAt = Date.now();
-        emailTracking.set(trackingId, trackingData);
+        updateTrackingData(trackingId, { openedAt: Date.now() });
         
         // Log the email open
         console.log('Email opened:', {
@@ -30,7 +30,7 @@ export async function GET(
           email: trackingData.email,
           subject: trackingData.subject,
           sentAt: new Date(trackingData.sentAt).toISOString(),
-          openedAt: new Date(trackingData.openedAt).toISOString(),
+          openedAt: new Date(Date.now()).toISOString(),
         });
       }
     }
