@@ -74,12 +74,12 @@ export default function IncidentReportForm({ userRole, activeEmergencies, onSubm
     try {
       const reportData: Partial<Report> = {
         name: `Incident Report - ${selectedEmergency.type} at ${selectedEmergency.location}`,
-        type: ReportType.INCIDENT_REPORT,
+        type: 'emergency',
         dateRange: {
           start: selectedEmergency.createdAt,
           end: new Date().toISOString()
         },
-        status: ReportStatus.PROCESSING,
+        status: 'pending',
         format: 'PDF',
         incidentDetails: {
           incidentId: selectedEmergency.id,

@@ -68,6 +68,40 @@ export interface ReportConfig {
   filters: Record<string, any>;
 }
 
+export interface Report {
+  id: string;
+  name: string;
+  title: string;
+  type: ReportType;
+  status: ReportStatus;
+  generatedBy: string;
+  createdAt: string;
+  fileSize: string;
+  format?: 'pdf' | 'csv' | 'excel';
+  incidentDetails?: {
+    incidentId: number;
+    cause: string;
+    casualties: {
+      fatalities: number;
+      injuries: number;
+      missing: number;
+    };
+    propertyDamage: {
+      description: string;
+      estimatedCost: number;
+      affectedAreas: string;
+    };
+    actionsTaken: string;
+    recommendations: string;
+    weatherConditions: string;
+    responseTime: string;
+    resourcesDeployed: string;
+    challengesFaced: string;
+    lessonsLearned: string;
+    attachments: File[];
+  };
+}
+
 export interface FetchReportsParams {
   page: number;
   limit: number;
