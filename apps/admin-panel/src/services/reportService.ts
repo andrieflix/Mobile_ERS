@@ -46,13 +46,18 @@ export const deleteReportById = async (reportId: string): Promise<void> => {
 
 export class ReportService {
   async generateReport(config: ReportConfig): Promise<Report> {
-    return apiGenerateReport(config);
+    try {
+      return await apiGenerateReport(config);
+    } catch (error) {
+      console.error('Error generating report:', error);
+      throw error;
+    }
   }
 
   async fetchReports(params: FetchReportsParams): Promise<FetchReportsResponse> {
     try {
       const response = await api.get('/api/reports', { params });
-      const reports = ReportSchema.array().parse(response.data.reports) as APIReport[];
+      const reports = ReportSchema.array().parse(response.data.reports);
       return {
         reports,
         total: response.data.total,
@@ -65,13 +70,23 @@ export class ReportService {
   }
 
   async createReport(data: Partial<Report>): Promise<Report> {
-    const response = await api.post('/reports', data);
-    return response.data;
+    try {
+      const response = await api.post('/api/reports', data);
+      return ReportSchema.parse(response.data);
+    } catch (error) {
+      console.error('Error creating report:', error);
+      throw error;
+    }
   }
 
   async updateReport(id: string, data: Partial<Report>): Promise<Report> {
-    const response = await api.put(`/reports/${id}`, data);
-    return response.data;
+    try {
+      const response = await api.put(`/api/reports/${id}`, data);
+      return ReportSchema.parse(response.data);
+    } catch (error) {
+      console.error('Error updating report:', error);
+      throw error;
+    }
   }
 }
 

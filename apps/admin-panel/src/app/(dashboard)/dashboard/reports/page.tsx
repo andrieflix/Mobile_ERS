@@ -3,9 +3,7 @@
 import { useState, useEffect } from 'react';
 import { FiSearch, FiFilter, FiUser, FiMapPin } from 'react-icons/fi';
 import { Report, fetchReports } from '@ph-emergency/api';
-
-type ReportType = 'emergency' | 'user' | 'system' | 'custom';
-type ReportStatus = 'pending' | 'completed' | 'failed';
+import { ReportType, ReportStatus } from '@/types';
 
 export default function ReportsPage() {
   const [reports, setReports] = useState<Report[]>([]);

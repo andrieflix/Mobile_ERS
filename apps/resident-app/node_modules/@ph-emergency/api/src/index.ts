@@ -7,7 +7,35 @@ export const ReportSchema = z.object({
   status: z.enum(['pending', 'completed', 'failed']),
   generatedBy: z.string(),
   createdAt: z.string(),
+  updatedAt: z.string(),
   fileSize: z.string(),
+  format: z.enum(['pdf', 'csv', 'excel']).optional(),
+  dateRange: z.object({
+    start: z.string(),
+    end: z.string(),
+  }).optional(),
+  incidentDetails: z.object({
+    incidentId: z.number(),
+    cause: z.string(),
+    casualties: z.object({
+      fatalities: z.number(),
+      injuries: z.number(),
+      missing: z.number(),
+    }),
+    propertyDamage: z.object({
+      description: z.string(),
+      estimatedCost: z.number(),
+      affectedAreas: z.string(),
+    }),
+    actionsTaken: z.string(),
+    recommendations: z.string(),
+    weatherConditions: z.string(),
+    responseTime: z.string(),
+    resourcesDeployed: z.string(),
+    challengesFaced: z.string(),
+    lessonsLearned: z.string(),
+    attachments: z.array(z.instanceof(File)),
+  }).optional(),
 });
 
 export type Report = z.infer<typeof ReportSchema>;

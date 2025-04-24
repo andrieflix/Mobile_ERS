@@ -70,12 +70,12 @@ export interface ReportConfig {
 
 export interface Report {
   id: string;
-  name: string;
   title: string;
   type: ReportType;
   status: ReportStatus;
   generatedBy: string;
   createdAt: string;
+  updatedAt: string;
   fileSize: string;
   format?: 'pdf' | 'csv' | 'excel';
   dateRange?: {
