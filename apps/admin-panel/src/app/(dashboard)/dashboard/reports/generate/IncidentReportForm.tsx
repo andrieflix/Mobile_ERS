@@ -80,7 +80,7 @@ export default function IncidentReportForm({ userRole, activeEmergencies, onSubm
           end: new Date().toISOString()
         },
         status: 'pending',
-        format: 'PDF',
+        format: 'pdf',
         incidentDetails: {
           incidentId: selectedEmergency.id,
           ...formData

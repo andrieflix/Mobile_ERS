@@ -78,6 +78,10 @@ export interface Report {
   createdAt: string;
   fileSize: string;
   format?: 'pdf' | 'csv' | 'excel';
+  dateRange?: {
+    start: string;
+    end: string;
+  };
   incidentDetails?: {
     incidentId: number;
     cause: string;
